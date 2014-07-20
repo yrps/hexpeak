@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Hexadecimal numeral translator and reader</title>
+    <link type="text/css" rel="stylesheet" href="hexpeak.css" />
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" />
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script></head>
+    <script src="hexpeak.js"></script>
+<body class="ui-state-default">
+<header>Input numbers</header>
+<fieldset class="ui-widget">
+    <label><span>Decimal</span><input type="text" id="decfield"/></label>
+    <label><span>Binary</span><input type="text" id="binfield"/></label>
+    <label><span>Octal</span><input type="text" id="octfield"/></label>
+    <label><span>Hexadecimal</span><input type="text" id="hexfield"/></label>
+    <div class="center" id="count-type">
+        <input type="radio" name="counting" id="ord" checked><label for="ord">Ordinal</label>
+        <input type="radio" name="counting" id="card"><label for="card">Cardinal</label>
+    </div>
+</fieldset>
+<footer>Hexadecimal lexicon from <a href="http://www.intuitor.com/hex/words.html">Hex Headquarters</a></footer>
+<script>
+    $(function () {
+        $( "#count-type" ).buttonset();
+
+        $(":text").each(function() {
+            $(this).focus(function() {
+                $(this).parent().addClass( "ui-state-highlight" );
+            });
+            $(this).blur(function() {
+                $(this).parent().removeClass( "ui-state-highlight" );
+            });
+        });
+    });
+</script>
+</body>
+</html>

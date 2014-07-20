@@ -1,0 +1,25 @@
+fieldset {
+    display: inline-block;
+    border-radius: 1em;
+}
+
+label {
+    display: table-row;
+}
+
+input {
+    font: larger monospace !important;
+    border-radius: .5em;
+}
+
+input, label>span {
+    text-align: right;
+    display: table-cell;
+    padding-right: .5em;
+}
+
+.center {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
