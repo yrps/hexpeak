@@ -1,0 +1,9 @@
+{"name":"hexpeak","tagline":"hexadecimal number translator: show pronunciation and read aloud","body":"### hexspeak\
+\
+* converts numbers between decimal, hex, octal, and binary\
+* generates pronunciation of hexadecimal words, according to [Hex Headquarters](http://www.intuitor.com/hex/words.html \"Hex Headquarters\")\
+* reads pronunciation aloud using the browser's [W3C speech API](https://dvcs.w3.org/hg/speech-api/raw-file/tip/speechapi.html \"speech API\")\
+* written in JavaScript, with jQuery and jQuery UI",
+"google":"UA-53013365-1",
+"note":"Don't delete this file! It's used internally to help with page regeneration."
+}
