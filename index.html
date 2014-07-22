@@ -3,25 +3,36 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Hexadecimal numeral translator and reader</title>
-    <link type="text/css" rel="stylesheet" href="hexpeak.css" /> <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" />
+
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
     <script src="hexpeak.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="hexpeak.css" />
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" />
     <link rel="icon" href="icon/favicon.ico" type="image/x-icon">
 </head>
+
 <body class="ui-state-default">
-<h3>Input a number into any field</h3>
-<fieldset class="ui-widget">
-    <label><span>Decimal</span><input type="text" id="decfield"/></label>
-    <label><span>Binary</span><input type="text" id="binfield"/></label>
-    <label><span>Octal</span><input type="text" id="octfield"/></label>
-    <label><span>Hexadecimal</span><input type="text" id="hexfield"/></label>
-    <div class="center" id="count-type">
-        <input type="radio" name="counting" id="ord" checked><label for="ord">Ordinal</label>
-        <input type="radio" name="counting" id="card"><label for="card">Cardinal</label>
-    </div>
-</fieldset>
-<footer>Hexadecimal lexicon from <a href="http://www.intuitor.com/hex/words.html">Hex Headquarters</a></footer>
+<h3 class="ui-widget">Input a number into any field</h3>
+<div class="tr">
+    <fieldset class="roundy ui-widget">
+        <label><span>Decimal</span><input type="text" id="decfield"/></label>
+        <label><span>Binary</span><input type="text" id="binfield"/></label>
+        <label><span>Octal</span><input type="text" id="octfield"/></label>
+        <label><span>Hexadecimal</span><input type="text" id="hexfield"/></label>
+        <div class="center" id="widget-bar">
+            <span id="count-type">
+                <input type="radio" name="counting" id="ord" checked><label for="ord">Ordinal</label>
+                <input type="radio" name="counting" id="card"><label for="card">Cardinal</label>
+            </span>
+            <input type="button" class="ui-state-default ui-corner-all ui-icon ui-icon-play" />
+        </div>
+    </fieldset>
+    <p id="translation" class="roundy ui-widget ui-state-active">translation here translation here translation here</p>
+</div>
+<footer class="ui-widget">Hexadecimal lexicon from <a href="http://www.intuitor.com/hex/words.html">Hex Headquarters</a></footer>
+
 <script>
     $(function () {
         $( "#count-type" ).buttonset();

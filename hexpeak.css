@@ -1,18 +1,18 @@
-fieldset {
-    display: inline-block;
-    border-radius: 1em;
-}
-
 label {
     display: table-row;
 }
 
-input {
-    font: larger monospace !important;
-    border-radius: .5em;
+h3 {
+    margin: 1em;
 }
 
-input, label>span {
+input[type=text] {
+    font: larger monospace !important;
+    border-radius: .5em;
+    margin-bottom: .25em;
+}
+
+input[type=text], label>span {
     text-align: right;
     display: table-cell;
     padding-right: .5em;
@@ -20,6 +20,35 @@ input, label>span {
 
 .center {
     text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+}
+
+.tr {
+    display: table-row;
+}
+
+.roundy {
+    display: table-cell;
+    border-radius: 1em;
+}
+
+input[type=radio] {
+    font-size: smaller;
+}
+
+#widget-bar {
+    margin-top: .5em;
+}
+
+#count-type {
+    margin: 0;
+}
+
+#translation {
+    padding: 1em;
+    vertical-align: top;
+    width: 90%;
+}
+
+footer {
+    clear: both;
 }

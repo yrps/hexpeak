@@ -4,11 +4,11 @@ var numTFs = [];
 function NumberTF(id, rad) {
     this.elem = $( id );
     this.radix = rad;
-    $( id ).blur(function() {
+    $( id ).change(function() {
         var num = parseInt($(this).val(), rad);
         num = isNaN(num) ? 0 : num;
         $.each(numTFs, function(k, v){
-            v.elem.val(num.toString(v.radix));
+            v.elem.val(num.toString(v.radix).toUpperCase());
         })
     });
 }
