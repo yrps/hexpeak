@@ -42,21 +42,19 @@
 <script>
     $(function () {
         /* widgetize the appropriate elements */
-        var countRadio = {
-            obj: $( "#count-type" ),
-            longest: 0,
-            highest: 0
-        };
-        countRadio.obj.buttonset();
+        var countRadio = $( "#count-type" );
+        countRadio.widest = 0;
+        countRadio.tallest = 0;
+        countRadio.buttonset();
 
         /* make the width and height of buttons uniform within buttonsets */
-        countRadio.obj.find("label").each(function(){
+        countRadio.find("label").each(function(){
             var thisWidth = $(this).width();
             var thisHeight = $(this).height();
-            countRadio.longest = thisWidth > countRadio.longest ? thisWidth : countRadio.longest;
-            countRadio.highest = thisHeight > countRadio.highest ? thisHeight : countRadio.highest;
+            countRadio.widest = thisWidth > countRadio.widest ? thisWidth : countRadio.widest;
+            countRadio.tallest = thisHeight > countRadio.tallest ? thisHeight : countRadio.tallest;
         }).each(function(){
-            $(this).width(countRadio.longest);
+            $(this).width(countRadio.widest);
         });
 
         $( "#playback" ).button({
