@@ -1,21 +1,19 @@
-label {
-    display: table-row;
-}
-
 h3 {
     margin: 1em;
 }
 
 input[type=text] {
     font: larger monospace !important;
-    border-radius: .5em;
     margin-bottom: .25em;
 }
 
-input[type=text], label>span {
+fieldset input[type=text], fieldset label {
     text-align: right;
-    display: table-cell;
     padding-right: .5em;
+}
+
+label[for="hexfield"] {
+    font-weight: bold;
 }
 
 .center {
@@ -26,29 +24,31 @@ input[type=text], label>span {
     display: table-row;
 }
 
-.roundy {
+.tr>* {
     display: table-cell;
-    border-radius: 1em;
 }
 
-input[type=radio] {
-    font-size: smaller;
-}
-
-#widget-bar {
-    margin-top: .5em;
+#widget-bar>* {
+    margin: 0 .5em;
 }
 
 #count-type {
+    font-size: small !important;
     margin: 0;
 }
 
 #translation {
+    display: table-cell;
     padding: 1em;
     vertical-align: top;
     width: 90%;
 }
 
 footer {
+    border-top: 2px solid;
+    width: 100%;
+    text-align: center;
     clear: both;
+    position: fixed;
+    bottom: .25em;
 }

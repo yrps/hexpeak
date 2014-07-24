@@ -13,30 +13,66 @@
     <link rel="icon" href="icon/favicon.ico" type="image/x-icon">
 </head>
 
-<body class="ui-state-default">
-<h3 class="ui-widget">Input a number into any field</h3>
+<body>
+<h3>Input a number into any field</h3>
 <div class="tr">
-    <fieldset class="roundy ui-widget">
-        <label><span>Decimal</span><input type="text" id="decfield"/></label>
-        <label><span>Binary</span><input type="text" id="binfield"/></label>
-        <label><span>Octal</span><input type="text" id="octfield"/></label>
-        <label><span>Hexadecimal</span><input type="text" id="hexfield"/></label>
+    <fieldset class="roundy">
+        <div class="tr" title="decimal"><label for="decfield">Dec</label>
+            <input type="text" id="decfield"/></div>
+        <div class="tr" title="binary"><label for="binfield">Bin</label>
+            <input type="text" id="binfield"/></div>
+        <div class="tr" title="octal"><label for="octfield">Oct</label>
+            <input type="text" id="octfield"/></div>
+        <div class="tr" title="hexadecimal"><label for="hexfield">Hex</label>
+            <input type="text" id="hexfield"/></div>
         <div class="center" id="widget-bar">
             <span id="count-type">
-                <input type="radio" name="counting" id="ord" checked><label for="ord">Ordinal</label>
-                <input type="radio" name="counting" id="card"><label for="card">Cardinal</label>
+                <input type="radio" name="counting" id="ord" checked>
+                <label for="ord" title="Ordinal counting">n<sup> </sup></label>
+                <input type="radio" name="counting" id="card">
+                <label for="card" title="Cardinal counting">n<sup>th</sup></label>
             </span>
-            <input type="button" class="ui-state-default ui-corner-all ui-icon ui-icon-play" />
+            <button id="playback" title="read aloud">playback button</button>
         </div>
     </fieldset>
-    <p id="translation" class="roundy ui-widget ui-state-active">translation here translation here translation here</p>
+    <p id="translation" title="translation of hex appears here" class="roundy">translation here translation here</p>
 </div>
-<footer class="ui-widget">Hexadecimal lexicon from <a href="http://www.intuitor.com/hex/words.html">Hex Headquarters</a></footer>
+<footer>Hexadecimal lexicon from <a href="http://www.intuitor.com/hex/words.html">Hex Headquarters</a></footer>
 
 <script>
     $(function () {
-        $( "#count-type" ).buttonset();
+        /* widgetize the appropriate elements */
+        var countRadio = {
+            obj: $( "#count-type" ),
+            longest: 0,
+            highest: 0
+        };
+        countRadio.obj.buttonset();
 
+        /* make the width and height of buttons uniform within buttonsets */
+        countRadio.obj.find("label").each(function(){
+            var thisWidth = $(this).width();
+            var thisHeight = $(this).height();
+            countRadio.longest = thisWidth > countRadio.longest ? thisWidth : countRadio.longest;
+            countRadio.highest = thisHeight > countRadio.highest ? thisHeight : countRadio.highest;
+        }).each(function(){
+            $(this).width(countRadio.longest);
+        });
+
+        $( "#playback" ).button({
+            icons: {
+                primary: "ui-icon-play"
+            },
+            text: false
+        });
+
+        /* statically assign UI class */
+        $( "body" ).addClass( "ui-state-default" );
+        $( "#translation" ).addClass( "ui-state-active" );
+        $( "h3, footer, .roundy" ).addClass( "ui-widget" );
+        $( ":text, .roundy" ).addClass( "ui-corner-all" );
+
+        /* dynamically assign UI class */
         $(":text").each(function() {
             $(this).focus(function() {
                 $(this).parent().addClass( "ui-state-highlight" );
