@@ -3,18 +3,26 @@ var numberTFs = [["#decfield", 10], ["#binfield", 2], ["#octfield", 8], ["#hexfi
 var countSet = ":radio[name=counting]";
 
 var dict = {
-    card: ["zero", "one", "two", "three", "four", "five", "six", "seven",
+    card: ["one", "two", "three", "four", "five", "six", "seven",
         "eight", "nine", "ten", "eleven", "twelve", "draze", "eptwin", "fim"]
     ,
-    ord: ["zeroth", "first", "second", "third", "fourth", "fifth", "sixth", "seventh",
-        "eighth", "ninth", "tenth", "eleventh", "twelfth", "drazeth", "eptwinth", "fimth"]
+    ord: ["first", "second", "third", "fourth", "fifth", "sixth", "seventh",
+        "eighth", "ninth", "tenth", "leventh", "twelfth", "drazeth", "eptwinth", "fimth"]
     ,
-    teeks: ["tex", "oneteek", "twenteek", "thirteek", "fourteek", "fifteek", "sixteek", "sevteek",
+    teeks: ["oneteek", "twenteek", "thirteek", "fourteek", "fifteek", "sixteek", "sevteek",
         "eighteek", "nineteek", "tenteek", "levteek", "twelfteek", "drazeteek", "epteek", "fimteek", "umpteek"]
     ,
-    texes: ["?", "?", "twentek", "thirtek", "fourtek", "fiftek", "sixtek", "sevtek",
+    texes: ["tex", "twentek", "thirtek", "fourtek", "fiftek", "sixtek", "sevtek",
         "eightek", "ninetek", "tentek", "levtek", "twelftek", "drazetek", "eptek", "fimtek"]
+    ,
+    2: "hundrek"
+    ,
+    3: "thousek"
+    ,
+    4: "millek"
 };
+
+var zero = {card: "zero", ord: "zeroth"};
 
 /** initialize the fields to a random value */
 function initFields(min, max) {
@@ -29,28 +37,60 @@ function updateTFs(num) {
     $(numberTFs).each(function(k, v){
         v.val(num.toString(v.radix).toUpperCase());
     });
-    updateText(num)
+    updateText()
 }
 
-/** translate and update the text-out element */
-function updateText(num) {
-    var pronounce = "zero";
-    var digitCount = 0;
-    var digitsRemain = num > 0;
-    while (digitsRemain) {
-        var nextDigit = num % 0x10;
-        digitCount ++;
-        console.log(countSet.filter(":checked").get(0).id, digitCount, nextDigit.toString(0x10));
-        num = (num / 0x10 >> 0); // >> 0 as alternative to Math.floor
-        digitsRemain = num > 0;
+/** translate the number and update the text-out element */
+function updateText() {
+    var num = numberTFs[numberTFs.length-1].val();
+    var countMode = countSet.filter(":checked").get(0).id; // cardinal or ordinal
+    var pronounce = "";
+    if ( parseInt(num, 0x10) === 0 ) {
+        pronounce = zero[countMode]; // zero is a special case
+    } else {
+        var isTeek = parseInt(num.slice(-2), 0x10) % 0xFF; // the teeks are 0x11 < num < 0xFF
+        if (!(isTeek > 0x10 && isTeek < 0x20)) isTeek = false;
+        for (var nDigit = num.length; nDigit > 0; nDigit--) {
+            var digit = parseInt(num.charAt(nDigit - 1), 0x10);
+            var newWord;
+
+            if ( digit === 0 || (isTeek && nDigit === num.length) )
+                continue; // zeroes do not contribute to the pronunciation
+            switch (nDigit) {
+                case ( num.length ): // ones digit
+                    newWord = dict[countMode];
+                    newWord = newWord[digit-1];
+                    break;
+                case ( num.length - 1 ): // texes digit
+                    newWord = isTeek ? dict.teeks : dict.texes;
+                    if (isTeek) digit = isTeek % 0x10;
+                    newWord = newWord[digit-1];
+                    break;
+                case ( num.length - 2 ): // hundreks digit
+                case ( num.length - 3 ): // thouseks digit
+                case ( num.length - 4 ): // milleks digit
+                    newWord = dict["card"][digit-1] + " " + dict[num.length - nDigit];
+                    if (parseInt(num.slice(-num.length + nDigit), 0x10) > 0xFF) newWord += ", ";
+                    break;
+                default:
+                    newWord = "undefined"
+            }
+
+            if (countMode === "ord" && nDigit < num.length) {
+                newWord += "th"; // suffix is always the same for non-ones digit
+            }
+            countMode = undefined; // ordination suffix can be used no more than once
+            //console.log(nDigit, digit);
+            pronounce = newWord + " " + pronounce;
+        }
     }
-    $( "#translation").text(pronounce);
+    $( "#translation" ).text(pronounce);
 }
 
 /** respond to changing counting type */
 function registerChangeCount() {
     countSet.change(function() {
-        updateText($("#decfield").val());
+        updateText();
     })
 }
 
