@@ -15,11 +15,19 @@ var dict = {
     texes: ["tex", "twentek", "thirtek", "fourtek", "fiftek", "sixtek", "sevtek",
         "eightek", "ninetek", "tentek", "levtek", "twelftek", "drazetek", "eptek", "fimtek"]
     ,
-    2: "hundrek"
+    0x2: "hundrek"
     ,
-    3: "thousek"
+    0x3: "thousek"
     ,
-    4: "millek"
+    0x4: "millek"
+    ,
+    0x8: "billek"
+    ,
+    0xC: "trillek"
+    ,
+    0x10: "quadrillek"
+    ,
+    max: Math.pow(2, 4 * 0x14) // using Math.pow because << maxes out at 32-bit
 };
 
 var zero = {card: "zero", ord: "zeroth"};
@@ -35,14 +43,19 @@ function initFields(min, max) {
 /** synchronize all fields according to their respective bases */
 function updateTFs(num) {
     $(numberTFs).each(function(k, v){
-        v.val(num.toString(v.radix).toUpperCase());
+        if (num >= dict.max) {
+            console.warn("overflow: 0x%s >= 0x%s",
+                num.toString(0x10).toUpperCase(), (dict.max).toString(0x10).toUpperCase());
+            num = num & dict.max;
+        }
+        v.text(num.toString(v.radix).toUpperCase());
     });
     updateText()
 }
 
 /** translate the number and update the text-out element */
 function updateText() {
-    var num = numberTFs[numberTFs.length-1].val();
+    var num = numberTFs[numberTFs.length-1].text();
     var countMode = countSet.filter(":checked").get(0).id; // cardinal or ordinal
     var pronounce = "";
     if ( parseInt(num, 0x10) === 0 ) {
@@ -104,8 +117,8 @@ $(document).ready(function() {
         var radix = v[1];
         numberTFs[k] = $(v[0]); // change from simple array to jQuery object
         numberTFs[k].radix = radix;
-        numberTFs[k].change(function() {
-            var num = parseInt(numberTFs[k].val(), radix);
+        numberTFs[k].blur(function() {
+            var num = parseInt(numberTFs[k].text(), radix);
             num = isNaN(num) ? 0 : num;
             updateTFs(num)
         });
@@ -115,4 +128,5 @@ $(document).ready(function() {
 
     initFields();
     registerChangeCount();
+    console.log("Maximum parseable is 0x%s - 1", dict.max.toString(0x10));
 });

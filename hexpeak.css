@@ -2,12 +2,20 @@ h3 {
     margin: 1em;
 }
 
-input[type=text] {
+[contenteditable] {
     font: larger monospace !important;
-    margin-bottom: .25em;
+    border-width: 3px !important;
+    border-style: groove !important;
+    text-overflow: ellipsis;
+    text-align: right;
+    width: 100%;
 }
 
-fieldset input[type=text], fieldset label {
+fieldset {
+    width: 90%;
+}
+
+fieldset>div>label {
     text-align: right;
     padding-right: .5em;
 }
@@ -20,7 +28,12 @@ label[for="hexfield"] {
     text-align: center;
 }
 
+.t {
+    border-spacing: .25em;
+}
+
 .tr {
+    width: 100%;
     display: table-row;
 }
 
@@ -38,10 +51,9 @@ label[for="hexfield"] {
 }
 
 #translation {
-    display: table-cell;
     padding: 1em;
     vertical-align: top;
-    width: 90%;
+    width: 70%;
 }
 
 footer {

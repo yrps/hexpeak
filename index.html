@@ -15,32 +15,39 @@
 
 <body>
 <h3>Input a number into any field</h3>
-<div class="tr">
-    <fieldset class="roundy">
-        <div class="tr" title="decimal"><label for="decfield">Dec</label>
-            <input type="text" id="decfield"/></div>
-        <div class="tr" title="binary"><label for="binfield">Bin</label>
-            <input type="text" id="binfield"/></div>
-        <div class="tr" title="octal"><label for="octfield">Oct</label>
-            <input type="text" id="octfield"/></div>
-        <div class="tr" title="hexadecimal"><label for="hexfield">Hex</label>
-            <input type="text" id="hexfield"/></div>
-        <div class="center" id="widget-bar">
-            <span id="count-type">
-                <input type="radio" name="counting" id="card" checked>
-                    <label for="card" title="Cardinal counting">n<sup> </sup></label>
-                <input type="radio" name="counting" id="ord">
-                    <label for="ord" title="Ordinal counting">n<sup>th</sup></label>
-            </span>
-            <button id="playback" title="read aloud">playback button</button>
-        </div>
-    </fieldset>
-    <p id="translation" title="translation of hex appears here" class="roundy">translation here translation here</p>
+<div class="t">
+    <div class="tr">
+        <fieldset class="roundy">
+            <div class="tr" title="decimal"><label for="decfield">Dec</label>
+                <span id="decfield" contenteditable></span></div>
+            <div class="tr" title="binary"><label for="binfield">Bin</label>
+                <span id="binfield" contenteditable></span></div>
+            <div class="tr" title="octal"><label for="octfield">Oct</label>
+                <span id="octfield" contenteditable></span></div>
+            <div class="tr" title="hexadecimal"><label for="hexfield">Hex</label>
+                <span id="hexfield" contenteditable></span></div>
+            <div class="center" id="widget-bar">
+                <span id="count-type">
+                    <input type="radio" name="counting" id="card" checked>
+                        <label for="card" title="Cardinal counting">n<sup> </sup></label>
+                    <input type="radio" name="counting" id="ord">
+                        <label for="ord" title="Ordinal counting">n<sup>th</sup></label>
+                </span>
+                <button id="playback" title="read aloud">playback button</button>
+            </div>
+        </fieldset>
+        <p id="translation" title="translation of hex appears here" class="roundy"></p>
+    </div>
 </div>
 <footer>Hexadecimal lexicon from <a href="http://www.intuitor.com/hex/words.html">Hex Headquarters</a></footer>
 
 <script>
     $(function () {
+        /* expand tooltips */
+        $( "fieldset>div[title]" ).each(function() {
+            $(this).attr( "title", "enter a number in " + $(this).attr( "title" ) );
+        });
+
         /* widgetize the appropriate elements */
         var countRadio = $( "#count-type" );
         countRadio.widest = 0;
@@ -48,12 +55,12 @@
         countRadio.buttonset();
 
         /* make the width and height of buttons uniform within buttonsets */
-        countRadio.find("label").each(function(){
+        countRadio.find( "label" ).each(function() {
             var thisWidth = $(this).width();
             var thisHeight = $(this).height();
             countRadio.widest = thisWidth > countRadio.widest ? thisWidth : countRadio.widest;
             countRadio.tallest = thisHeight > countRadio.tallest ? thisHeight : countRadio.tallest;
-        }).each(function(){
+        }).each(function() {
             $(this).width(countRadio.widest);
         });
 
@@ -66,17 +73,17 @@
 
         /* statically assign UI class */
         $( "body" ).addClass( "ui-state-default" );
-        $( "#translation" ).addClass( "ui-state-active" );
-        $( "h3, footer, .roundy" ).addClass( "ui-widget" );
-        $( ":text, .roundy" ).addClass( "ui-corner-all" );
+        $( "#translation, [contenteditable]" ).addClass( "ui-state-active" );
+        $( "h3, footer, [contenteditable], .roundy" ).addClass( "ui-widget" );
+        $( "[contenteditable], .roundy" ).addClass( "ui-corner-all" );
 
         /* dynamically assign UI class */
-        $(":text").each(function() {
+        $( "[contenteditable]").each(function() {
             $(this).focus(function() {
-                $(this).parent().addClass( "ui-state-highlight" );
+                $(this).addClass( "ui-state-highlight" );
             });
             $(this).blur(function() {
-                $(this).parent().removeClass( "ui-state-highlight" );
+                $(this).removeClass( "ui-state-highlight" );
             });
         });
     });

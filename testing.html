@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>testing page</title>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
+
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" />
+    <link rel="icon" href="icon/favicon.ico" type="image/x-icon">
+    <style>
+        input::first-letter {
+            color: red;
+        }
+        textarea::first-letter {
+            color: red;
+        }
+        p::first-letter {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <button id="button-elem" >text inside button</button>
+    <label>
+        <input type="text" value="123456"/>
+        <textarea rows="1" cols="50">At w3schools.com you will learn how to make a website.</textarea>
+    </label>
+    <p contenteditable>qwerty</p>
+    <script>
+        $(function () {
+            $( "#button-elem").button({
+                icons: {
+                    primary: "ui-icon-locked"
+                },
+                text: false
+            });
+        });
+    </script>
+</body>
+</html>
