@@ -18,13 +18,13 @@
 <div class="t">
     <div class="tr">
         <fieldset class="roundy">
-            <div class="tr" title="decimal"><label for="decfield">Dec</label>
+            <div class="tr" title="decimal"><label>Dec</label>
                 <span id="decfield" contenteditable></span></div>
-            <div class="tr" title="binary"><label for="binfield">Bin</label>
+            <div class="tr" title="binary"><label>Bin</label>
                 <span id="binfield" contenteditable></span></div>
-            <div class="tr" title="octal"><label for="octfield">Oct</label>
+            <div class="tr" title="octal"><label>Oct</label>
                 <span id="octfield" contenteditable></span></div>
-            <div class="tr" title="hexadecimal"><label for="hexfield">Hex</label>
+            <div class="tr" title="hexadecimal"><label class="em">Hex</label>
                 <span id="hexfield" contenteditable></span></div>
             <div class="center" id="widget-bar">
                 <span id="count-type">
@@ -39,13 +39,26 @@
         <p id="translation" title="translation of hex appears here" class="roundy"></p>
     </div>
 </div>
-<footer>Hexadecimal lexicon from <a href="http://www.intuitor.com/hex/words.html">Hex Headquarters</a></footer>
+<footer><span><a href="https://github.com/ncoop/hexpeak/">View hexpeak source</a></span>
+    <span>Hexadecimal lexicon from <a href="http://www.intuitor.com/hex/words.html">Hex Headquarters</a></span>
+</footer>
 
 <script>
     $(function () {
-        /* expand tooltips */
+        var body = $( "body" );
+        /* apply body's max width to position:fixed elements*/
+        $('*').filter(function(){
+            return $(this).css('position') == "fixed";
+        }).css( "max-width", body.css("max-width") );
+
+        /* expand tooltip content */
         $( "fieldset>div[title]" ).each(function() {
             $(this).attr( "title", "enter a number in " + $(this).attr( "title" ) );
+        });
+
+        /* auto-tooltips for web links */
+        $(":link:not([title])").each(function() {
+            $(this).attr( "title", $(this).attr("href") );
         });
 
         /* widgetize the appropriate elements */
@@ -72,7 +85,7 @@
         });
 
         /* statically assign UI class */
-        $( "body" ).addClass( "ui-state-default" );
+        body.addClass( "ui-state-default" );
         $( "#translation, [contenteditable]" ).addClass( "ui-state-active" );
         $( "h3, footer, [contenteditable], .roundy" ).addClass( "ui-widget" );
         $( "[contenteditable], .roundy" ).addClass( "ui-corner-all" );

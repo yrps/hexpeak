@@ -10,14 +10,11 @@
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" />
     <link rel="icon" href="icon/favicon.ico" type="image/x-icon">
     <style>
-        input::first-letter {
-            color: red;
+        body {
+            background-color: darkcyan;
         }
-        textarea::first-letter {
-            color: red;
-        }
-        p::first-letter {
-            color: green;
+        input::first-letter, p::first-letter {
+            font-weight: bold;
         }
     </style>
 </head>
@@ -25,9 +22,14 @@
     <button id="button-elem" >text inside button</button>
     <label>
         <input type="text" value="123456"/>
-        <textarea rows="1" cols="50">At w3schools.com you will learn how to make a website.</textarea>
     </label>
     <p contenteditable>qwerty</p>
+    <div style="display: table; width: 100%; background-color: darkolivegreen;">
+        <div style="display: table-row; background-color: gold;">
+            <div style="display: table-cell; background-color: lightgreen; width: 30%"><span>left cell</span></div>
+            <div style="display: table-cell; background-color: lightblue;"><span>right cell</span></div>
+        </div>
+    </div>
     <script>
         $(function () {
             $( "#button-elem").button({

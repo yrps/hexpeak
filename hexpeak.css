@@ -1,3 +1,9 @@
+body {
+    max-width: 960px;
+    margin: auto;
+    min-height: 100%;
+}
+
 h3 {
     margin: 1em;
 }
@@ -11,16 +17,12 @@ h3 {
     width: 100%;
 }
 
-fieldset {
-    width: 90%;
-}
-
 fieldset>div>label {
     text-align: right;
     padding-right: .5em;
 }
 
-label[for="hexfield"] {
+.em {
     font-weight: bold;
 }
 
@@ -29,11 +31,12 @@ label[for="hexfield"] {
 }
 
 .t {
+    display: table;
+    width: 100%;
     border-spacing: .25em;
 }
 
 .tr {
-    width: 100%;
     display: table-row;
 }
 
@@ -63,4 +66,16 @@ footer {
     clear: both;
     position: fixed;
     bottom: .25em;
+}
+
+footer>span:first-of-type {
+    float: left;
+}
+
+footer>span:last-of-type {
+    float: right;
+}
+
+a:link {
+    text-decoration: underline !important;
 }
