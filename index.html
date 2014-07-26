@@ -17,15 +17,17 @@
 <h3>Input a number into any field</h3>
 <div class="t">
     <div class="tr">
-        <fieldset class="roundy">
-            <div class="tr" title="decimal"><label>Dec</label>
-                <span id="decfield" contenteditable></span></div>
-            <div class="tr" title="binary"><label>Bin</label>
-                <span id="binfield" contenteditable></span></div>
-            <div class="tr" title="octal"><label>Oct</label>
-                <span id="octfield" contenteditable></span></div>
-            <div class="tr" title="hexadecimal"><label class="em">Hex</label>
-                <span id="hexfield" contenteditable></span></div>
+        <div>
+            <table class="roundy">
+                <tr title="decimal"><td>Dec</td>
+                    <td><div data-radix="10" contenteditable></div></td></tr>
+                <tr title="binary"><td>Bin</td>
+                    <td><div data-radix="2" contenteditable></div></td></tr>
+                <tr title="octal"><td>Oct</td>
+                    <td><div data-radix="8" contenteditable></div></td></tr>
+                <tr title="hexadecimal"><th>Hex</th>
+                    <td><div data-radix="16" contenteditable></div></td></tr>
+            </table>
             <div class="center" id="widget-bar">
                 <span id="count-type">
                     <input type="radio" name="counting" id="card" checked>
@@ -35,7 +37,7 @@
                 </span>
                 <button id="playback" title="read aloud">playback button</button>
             </div>
-        </fieldset>
+        </div>
         <p id="translation" title="translation of hex appears here" class="roundy"></p>
     </div>
 </div>
@@ -52,7 +54,7 @@
         }).css( "max-width", body.css("max-width") );
 
         /* expand tooltip content */
-        $( "fieldset>div[title]" ).each(function() {
+        $( "tr[title]" ).each(function() {
             $(this).attr( "title", "enter a number in " + $(this).attr( "title" ) );
         });
 
@@ -92,6 +94,7 @@
 
         /* dynamically assign UI class */
         $( "[contenteditable]").each(function() {
+            $(this).css("max-width", $(this).css("width"));
             $(this).focus(function() {
                 $(this).addClass( "ui-state-highlight" );
             });

@@ -1,5 +1,4 @@
 var playing;
-var numberTFs = [["#decfield", 10], ["#binfield", 2], ["#octfield", 8], ["#hexfield", 0x10]];
 var countSet = ":radio[name=counting]";
 
 var dict = {
@@ -30,6 +29,13 @@ var dict = {
     max: Math.pow(2, 4 * 0x14) // using Math.pow because << maxes out at 32-bit
 };
 
+var colors = {
+    0x4: "DarkRed",
+    0x8: "DarkGreen",
+    0xC: "DarkBlue",
+    0x10: "DarkGoldenRod"
+};
+
 var zero = {card: "zero", ord: "zeroth"};
 
 /** initialize the fields to a random value */
@@ -40,22 +46,32 @@ function initFields(min, max) {
     updateTFs(randVal);
 }
 
+/** parse the given textfield object by its own radix and then update TFs */
+function parseTF( TFobj ) {
+    var num = parseInt(TFobj.text(), TFobj.attr( "data-radix" ));
+    num = isNaN(num) ? 0 : num;
+    updateTFs(num, TFobj );
+}
+
 /** synchronize all fields according to their respective bases */
-function updateTFs(num) {
-    $(numberTFs).each(function(k, v){
-        if (num >= dict.max) {
-            console.warn("overflow: 0x%s >= 0x%s",
-                num.toString(0x10).toUpperCase(), (dict.max).toString(0x10).toUpperCase());
-            num = num & dict.max;
-        }
-        v.text(num.toString(v.radix).toUpperCase());
+function updateTFs( num/*, TFobj*/ ) {
+    if (num >= dict.max) {
+        console.warn("overflow: 0x%s >= 0x%s",
+            num.toString(0x10).toUpperCase(), (dict.max).toString(0x10).toUpperCase());
+        num = num & dict.max;
+    }
+    $( "[data-radix]" ).each(function() {
+//        if ($(this).get(0)==(TFobj && TFobj.get(0)) )
+//            return; // no need to update self
+        var text = num.toString($(this).attr( "data-radix" )).toUpperCase();
+        $(this).text(text);
     });
-    updateText()
+    updateText();
 }
 
 /** translate the number and update the text-out element */
 function updateText() {
-    var num = numberTFs[numberTFs.length-1].text();
+    var num = $( "[data-radix='16']:first" ).text();
     var countMode = countSet.filter(":checked").get(0).id; // cardinal or ordinal
     var pronounce = "";
     if ( parseInt(num, 0x10) === 0 ) {
@@ -103,7 +119,7 @@ function updateText() {
 /** respond to changing counting type */
 function registerChangeCount() {
     countSet.change(function() {
-        updateText();
+        updateText($(this));
     })
 }
 
@@ -111,17 +127,20 @@ function registerChangeCount() {
 $(document).ready(function() {
     playing = false;
 
-    /* destructively iterate over the array of selectors & radices,
-    replacing with jQuery objects corresponding to DOM elements*/
-    $(numberTFs).each(function(k, v){
-        var radix = v[1];
-        numberTFs[k] = $(v[0]); // change from simple array to jQuery object
-        numberTFs[k].radix = radix;
-        numberTFs[k].blur(function() {
-            var num = parseInt(numberTFs[k].text(), radix);
-            num = isNaN(num) ? 0 : num;
-            updateTFs(num)
-        });
+    $( "[contenteditable]" ).keypress(function(event) {
+        var char = event.which;
+        if (char == 13) { // manual update on enter key
+            parseTF($(this));
+            event.preventDefault();
+            return;
+        }
+        char = String.fromCharCode(char);
+        char = parseInt( char, $(this).attr( "data-radix" ));
+        if (isNaN(char)) { // invalid numeral for this radix
+            event.preventDefault();
+        }
+    }).blur(function() {
+        parseTF($(this));
     });
 
     countSet = $( countSet );
