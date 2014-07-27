@@ -2,23 +2,30 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>Hexadecimal numeral translator and reader</title>
+    <meta name="author" content="Nathan Cooper">
+    <meta name="description"
+          content="translate decimal numbers to hexadecimal, hex numbers to hex words, and hear them spoken">
+    <meta name="keywords" content="hexadecimal,decimal,translation,html5,speech api">
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
+    <title>hexpeak | hexadecimal translator and reader</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="icon/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="hexpeak.css">
+    <link rel="stylesheet" type="text/css" id="ui-css"
+          href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
     <script src="hexpeak.js"></script>
-
-    <link type="text/css" rel="stylesheet" href="hexpeak.css" />
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" />
-    <link rel="icon" href="icon/favicon.ico" type="image/x-icon">
 </head>
 
 <body>
-<h3>Input a number into any field</h3>
+<h3>translate decimal numbers to hexadecimal, hex numbers to hex words, and hear them spoken</h3>
+<h4>Input a number into any field</h4>
 <div class="t">
     <div class="tr">
         <div>
-            <table class="roundy">
+            <table>
                 <tr title="decimal"><td>Dec</td>
                     <td><div data-radix="10" contenteditable></div></td></tr>
                 <tr title="binary"><td>Bin</td>
@@ -38,7 +45,7 @@
                 <button id="playback" title="read aloud">playback button</button>
             </div>
         </div>
-        <p id="translation" title="translation of hex appears here" class="roundy"></p>
+        <p id="translation" title="translation of hex appears here"></p>
     </div>
 </div>
 <footer><span><a href="https://github.com/ncoop/hexpeak/">View hexpeak source</a></span>
@@ -47,11 +54,7 @@
 
 <script>
     $(function () {
-        var body = $( "body" );
-        /* apply body's max width to position:fixed elements*/
-        $('*').filter(function(){
-            return $(this).css('position') == "fixed";
-        }).css( "max-width", body.css("max-width") );
+        var countRadio = $( "#count-type" ), fields = $( "[contenteditable]" ), cols = $( ".tr>*" );
 
         /* expand tooltip content */
         $( "tr[title]" ).each(function() {
@@ -59,17 +62,16 @@
         });
 
         /* auto-tooltips for web links */
-        $(":link:not([title])").each(function() {
-            $(this).attr( "title", $(this).attr("href") );
+        $( "a[href]:not([title])" ).each(function() {
+            $(this).attr( "title", $(this).attr( "href" ) );
         });
 
         /* widgetize the appropriate elements */
-        var countRadio = $( "#count-type" );
-        countRadio.widest = 0;
-        countRadio.tallest = 0;
         countRadio.buttonset();
 
         /* make the width and height of buttons uniform within buttonsets */
+        countRadio.widest = 0;
+        countRadio.tallest = 0;
         countRadio.find( "label" ).each(function() {
             var thisWidth = $(this).width();
             var thisHeight = $(this).height();
@@ -77,6 +79,7 @@
             countRadio.tallest = thisHeight > countRadio.tallest ? thisHeight : countRadio.tallest;
         }).each(function() {
             $(this).width(countRadio.widest);
+            $(this).height(countRadio.tallest);
         });
 
         $( "#playback" ).button({
@@ -87,14 +90,14 @@
         });
 
         /* statically assign UI class */
-        body.addClass( "ui-state-default" );
-        $( "#translation, [contenteditable]" ).addClass( "ui-state-active" );
-        $( "h3, footer, [contenteditable], .roundy" ).addClass( "ui-widget" );
-        $( "[contenteditable], .roundy" ).addClass( "ui-corner-all" );
+        $( "body" ).addClass( "ui-state-default" );
+        $( "#translation" ).add( fields ).addClass( "ui-state-active" );
+        $( "h3, h4, footer" ).add( cols, fields ).addClass( "ui-widget" );
+        $( cols, fields ).addClass( "ui-corner-all" );
 
         /* dynamically assign UI class */
-        $( "[contenteditable]").each(function() {
-            $(this).css("max-width", $(this).css("width"));
+        fields.each(function() {
+            //$(this).css( "max-width", $(this).css( "width" ));
             $(this).focus(function() {
                 $(this).addClass( "ui-state-highlight" );
             });

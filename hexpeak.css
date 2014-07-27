@@ -1,11 +1,21 @@
-body {
+body, footer {
     max-width: 960px;
+}
+
+body {
     margin: auto;
     min-height: 100%;
 }
 
 h3 {
-    margin: 1em;
+    font-size: smaller !important;
+    font-style: oblique;
+    text-align: center;
+}
+
+h4 {
+    text-indent: 1em;
+    margin-bottom: .5em;
 }
 
 [contenteditable] {
@@ -15,7 +25,8 @@ h3 {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    width: 100%;
+    width: 16em;
+    max-width: 16em;
 }
 
 table {
@@ -65,7 +76,7 @@ td:last-child {
 #translation {
     padding: 1em;
     vertical-align: top;
-    width: 60%;
+    width: 100%;
 }
 
 footer {

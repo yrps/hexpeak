@@ -2,6 +2,8 @@ var playing;
 var countSet = ":radio[name=counting]";
 
 var dict = {
+    zero: {card: "zero", ord: "zeroth"}
+    ,
     card: ["one", "two", "three", "four", "five", "six", "seven",
         "eight", "nine", "ten", "eleven", "twelve", "draze", "eptwin", "fim"]
     ,
@@ -30,13 +32,12 @@ var dict = {
 };
 
 var colors = {
+    0x0: "Black",
     0x4: "DarkRed",
     0x8: "DarkGreen",
     0xC: "DarkBlue",
     0x10: "DarkGoldenRod"
 };
-
-var zero = {card: "zero", ord: "zeroth"};
 
 /** initialize the fields to a random value */
 function initFields(min, max) {
@@ -75,7 +76,7 @@ function updateText() {
     var countMode = countSet.filter(":checked").get(0).id; // cardinal or ordinal
     var pronounce = "";
     if ( parseInt(num, 0x10) === 0 ) {
-        pronounce = zero[countMode]; // zero is a special case
+        pronounce = dict.zero[countMode]; // zero is a special case
     } else {
         var isTeek = parseInt(num.slice(-2), 0x10) % 0xFF; // the teeks are 0x11 < num < 0xFF
         if (!(isTeek > 0x10 && isTeek < 0x20)) isTeek = false;
@@ -147,5 +148,5 @@ $(document).ready(function() {
 
     initFields();
     registerChangeCount();
-    console.log("Maximum parseable is 0x%s - 1", dict.max.toString(0x10));
+    //console.log("Maximum parseable is 0x%s - 1", dict.max.toString(0x10));
 });
