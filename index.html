@@ -38,8 +38,8 @@
                 <button id="zero" title="clear fields">zero</button>
                 <button id="random" title="get a random number">random</button>
                 <span id="count-type">
-                    <input type="radio" name="counting" id="frac" checked>
-                        <label for="frac" title="Fractional numbers">n.m<sup> </sup></label>
+                    <!--<input type="radio" name="counting" id="frac" checked>
+                        <label for="frac" title="Fractional numbers">n.m<sup> </sup></label>-->
                     <input type="radio" name="counting" id="card" checked>
                         <label for="card" title="Cardinal numbers">n<sup> </sup></label>
                     <input type="radio" name="counting" id="ord">
@@ -57,8 +57,7 @@
 
 <script>
     $(function () {
-        var countRadio = $( "#count-type" ), playBtn = $( "#playback" ),
-                fields = $( "[contenteditable]" ), cols = $( ".tr>*");
+        var playBtn = $( "#playback" ), randBtn = $( "#random"), fields = $("[contenteditable]" ), cols = $( ".tr>*");
 
         /* create a header, populate it from the meta description, and prepend to body */
         $( "<h3></h3>" ).text( $( "meta[name='description']" ).attr( "content" )).prependTo( "body" );
@@ -74,7 +73,7 @@
         });
 
         /* widgetize the appropriate elements */
-        countRadio.buttonset();
+        $( "#count-type" ).buttonset();
 
         $( "#zero" ).button({
             icons: {
@@ -85,7 +84,8 @@
             zeroFields();
         });
 
-        $( "#random" ).button({
+        randBtn.attr( "title", randBtn.attr( "title" ) + " from 0x" + rand.min.toString(0x10).toUpperCase() +
+                " to 0x" + rand.max.toString(0x10).toUpperCase() ).button({
             icons: {
                 primary: "ui-icon-shuffle"
             },
@@ -120,7 +120,8 @@
 
         if (typeof SpeechSynthesisUtterance === "undefined") {
             playBtn.button( "disable" );
-            $( "<div></div>" ).addClass( "ui-widget" ).css({"text-align": "center", "font-size": "smaller"}).append(
+            $( "<div></div>" ).addClass( "ui-widget" ).
+                css({"text-align": "center", "font-size": "smaller", "text-indent": ".5em"}).append(
                 $( "<section></section>" ).text("The speech synthesis API doesn't work in this browser. Try Chrome?")
                     .addClass( "ui-state-error ui-corner-all" ).prepend(
                         $( "<span></span>" ).addClass("ui-icon ui-icon-alert").css("float", "left")

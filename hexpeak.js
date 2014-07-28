@@ -1,4 +1,3 @@
-var playing;
 var countSet = ":radio[name=counting]";
 
 var dict = {
@@ -31,6 +30,8 @@ var dict = {
     max: Math.pow(2, 4 * 0x14) // using Math.pow because << maxes out at 32-bit
 };
 
+var rand = {min: 0x10, max: 0xFFFF};
+
 var colors = {
     0x0: "Black",
     0x4: "DarkRed",
@@ -46,8 +47,8 @@ function zeroFields() {
 
 /** initialize the fields to a random value */
 function randFields(min, max) {
-    min = min || 0x10;
-    max = max || 0xFFF;
+    min = min || rand.min;
+    max = max || rand.max;
     var randVal = Math.floor(Math.random() * (max-min) + min);
     updateTFs(randVal);
 }
@@ -129,22 +130,23 @@ function updateText() {
             pronounce = newWord + " " + pronounce;
         }
     }
-    $( "#translation" ).text(pronounce.trim());
+    $( "#translation" ).text( pronounce.trim() );
 }
 
-/** speak whatever is in the translation element */
+/** initialize and return the speech object */
 function initSpeech() {
     var speech = new SpeechSynthesisUtterance();
+    speech.onstart = function() {
+        console.log("started speaking", speech.text)
+    };
     speech.onend = function() {
-        console.log("done speaking:", speech.text)
+        console.log("done speaking.")
     };
     return speech;
 }
 
 /** onload function */
 $(document).ready(function() {
-    playing = false;
-
     $( "[contenteditable]" ).keypress(function(event) {
         var char = event.which;
         if (char == 13) { // manual update on enter key
