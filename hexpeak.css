@@ -64,19 +64,21 @@ td:last-child {
     display: table-cell;
 }
 
-#widget-bar>* {
-    margin: 0 .5em;
-}
-
-#count-type {
-    font-size: small !important;
-    margin: 0;
+#count-type>label {
+    width: 4em;
+    font-size: x-small !important;
 }
 
 #translation {
     padding: 1em;
     vertical-align: top;
     width: 100%;
+}
+
+section {
+    padding: .5em;
+    margin: 1em;
+    display: inline-block;
 }
 
 footer {

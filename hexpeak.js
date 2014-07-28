@@ -39,8 +39,13 @@ var colors = {
     0x10: "DarkGoldenRod"
 };
 
+/** initialize the fields to a zero */
+function zeroFields() {
+    updateTFs(0);
+}
+
 /** initialize the fields to a random value */
-function initFields(min, max) {
+function randFields(min, max) {
     min = min || 0x10;
     max = max || 0xFFF;
     var randVal = Math.floor(Math.random() * (max-min) + min);
@@ -65,11 +70,21 @@ function updateTFs( num/*, TFobj*/ ) {
 //        if ($(this).get(0)==(TFobj && TFobj.get(0)) )
 //            return; // no need to update self
         var text = num.toString($(this).attr( "data-radix" )).toUpperCase();
-        $(this).text(text);
+        if ( $(this).get(0).id == "hex" ) {
+            //console.log(text.length, text.slice(-4));
+            location.hash = text;
+        }
+        $(this).html(text);
     });
     updateText();
 }
 
+/** respond to changing counting type */
+function registerChangeCount() {
+    countSet.change(function() {
+        updateText($(this));
+    })
+}
 /** translate the number and update the text-out element */
 function updateText() {
     var num = $( "[data-radix='16']:first" ).text();
@@ -114,14 +129,16 @@ function updateText() {
             pronounce = newWord + " " + pronounce;
         }
     }
-    $( "#translation" ).text(pronounce);
+    $( "#translation" ).text(pronounce.trim());
 }
 
-/** respond to changing counting type */
-function registerChangeCount() {
-    countSet.change(function() {
-        updateText($(this));
-    })
+/** speak whatever is in the translation element */
+function initSpeech() {
+    var speech = new SpeechSynthesisUtterance();
+    speech.onend = function() {
+        console.log("done speaking:", speech.text)
+    };
+    return speech;
 }
 
 /** onload function */
@@ -146,7 +163,11 @@ $(document).ready(function() {
 
     countSet = $( countSet );
 
-    initFields();
+    //console.log("hash: %s", location.hash);
+    if (!location.hash)
+        randFields();
+    else
+        updateTFs(parseInt(location.hash.substr(1), 0x10));
     registerChangeCount();
     //console.log("Maximum parseable is 0x%s - 1", dict.max.toString(0x10));
 });

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="author" content="Nathan Cooper">
     <meta name="description"
-          content="translate decimal numbers to hexadecimal, hex numbers to hex words, and hear them spoken">
+          content="convert numbers to hexadecimal, translate hex numbers to hex words, and hear them spoken">
     <meta name="keywords" content="hexadecimal,decimal,translation,html5,speech api">
 
     <title>hexpeak | hexadecimal translator and reader</title>
@@ -20,7 +20,6 @@
 </head>
 
 <body>
-<h3>translate decimal numbers to hexadecimal, hex numbers to hex words, and hear them spoken</h3>
 <h4>Input a number into any field</h4>
 <div class="t">
     <div class="tr">
@@ -33,14 +32,18 @@
                 <tr title="octal"><td>Oct</td>
                     <td><div data-radix="8" contenteditable></div></td></tr>
                 <tr title="hexadecimal"><th>Hex</th>
-                    <td><div data-radix="16" contenteditable></div></td></tr>
+                    <td><div data-radix="16" contenteditable id="hex"></div></td></tr>
             </table>
             <div class="center" id="widget-bar">
+                <button id="zero" title="clear fields">zero</button>
+                <button id="random" title="get a random number">random</button>
                 <span id="count-type">
+                    <input type="radio" name="counting" id="frac" checked>
+                        <label for="frac" title="Fractional numbers">n.m<sup> </sup></label>
                     <input type="radio" name="counting" id="card" checked>
-                        <label for="card" title="Cardinal counting">n<sup> </sup></label>
+                        <label for="card" title="Cardinal numbers">n<sup> </sup></label>
                     <input type="radio" name="counting" id="ord">
-                        <label for="ord" title="Ordinal counting">n<sup>th</sup></label>
+                        <label for="ord" title="Ordinal numbers">n<sup>th</sup></label>
                 </span>
                 <button id="playback" title="read aloud">playback button</button>
             </div>
@@ -54,7 +57,11 @@
 
 <script>
     $(function () {
-        var countRadio = $( "#count-type" ), fields = $( "[contenteditable]" ), cols = $( ".tr>*" );
+        var countRadio = $( "#count-type" ), playBtn = $( "#playback" ),
+                fields = $( "[contenteditable]" ), cols = $( ".tr>*");
+
+        /* create a header, populate it from the meta description, and prepend to body */
+        $( "<h3></h3>" ).text( $( "meta[name='description']" ).attr( "content" )).prependTo( "body" );
 
         /* expand tooltip content */
         $( "tr[title]" ).each(function() {
@@ -69,20 +76,25 @@
         /* widgetize the appropriate elements */
         countRadio.buttonset();
 
-        /* make the width and height of buttons uniform within buttonsets */
-        countRadio.widest = 0;
-        countRadio.tallest = 0;
-        countRadio.find( "label" ).each(function() {
-            var thisWidth = $(this).width();
-            var thisHeight = $(this).height();
-            countRadio.widest = thisWidth > countRadio.widest ? thisWidth : countRadio.widest;
-            countRadio.tallest = thisHeight > countRadio.tallest ? thisHeight : countRadio.tallest;
-        }).each(function() {
-            $(this).width(countRadio.widest);
-            $(this).height(countRadio.tallest);
+        $( "#zero" ).button({
+            icons: {
+                primary: "ui-icon-radio-off"
+            },
+            text: false
+        }).click(function() {
+            zeroFields();
         });
 
-        $( "#playback" ).button({
+        $( "#random" ).button({
+            icons: {
+                primary: "ui-icon-shuffle"
+            },
+            text: false
+        }).click(function() {
+            randFields();
+        });
+
+        playBtn.button({
             icons: {
                 primary: "ui-icon-play"
             },
@@ -105,6 +117,22 @@
                 $(this).removeClass( "ui-state-highlight" );
             });
         });
+
+        if (typeof SpeechSynthesisUtterance === "undefined") {
+            playBtn.button( "disable" );
+            $( "<div></div>" ).addClass( "ui-widget" ).css({"text-align": "center", "font-size": "smaller"}).append(
+                $( "<section></section>" ).text("The speech synthesis API doesn't work in this browser. Try Chrome?")
+                    .addClass( "ui-state-error ui-corner-all" ).prepend(
+                        $( "<span></span>" ).addClass("ui-icon ui-icon-alert").css("float", "left")
+                )
+            ).insertAfter( ".t" );
+        } else {
+            var speech = initSpeech();
+            playBtn.click(function () {
+                speech.text = $( "#translation" ).text();
+                speechSynthesis.speak(speech);
+            });
+        }
     });
 </script>
 </body>
