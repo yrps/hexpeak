@@ -109,7 +109,7 @@
 
         /* dynamically assign UI class */
         fields.each(function() {
-            //$(this).css( "max-width", $(this).css( "width" ));
+            $(this).attr( "spellcheck", "false");
             $(this).focus(function() {
                 $(this).addClass( "ui-state-highlight" );
             });

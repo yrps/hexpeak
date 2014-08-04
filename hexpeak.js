@@ -34,10 +34,10 @@ var dict = {
     ,
     0x10: "quadrillek"
     ,
-    maxHexDigits: 5
+    maxHexDigits: 13 // limitation of parseInt?
 };
 
-/* random numbers are within this range */
+/* range of random numbers */
 var rand = { min: 0x10, max: 0xFFFF };
 
 /*
@@ -84,7 +84,6 @@ function updateTFs( num/*, TFobj*/ ) {
 //            return; // no need to update self
         var text = num.toString($(this).attr( "data-radix" )).toUpperCase();
         if ( $(this).get(0).id == "hex" ) {
-            //console.log(text.length, text.slice(-4));
             location.hash = text;
         }
         $(this).html(text);
@@ -100,45 +99,61 @@ function registerChangeCount() {
 }
 /** translate the number and update the text-out element */
 function updateText() {
-    var num = elem.hexField.text();
+    var numText = elem.hexField.text();
     var countMode = elem.countSet.filter( ":checked" ).get(0).id; // cardinal or ordinal
     var pronounce = "";
-    if ( parseInt(num, 0x10) === 0 ) {
+    if ( parseInt( numText, 0x10) === 0 ) {
         pronounce = dict.zero[countMode]; // zero is a special case
     } else {
-        var isTeek = parseInt(num.slice(-2), 0x10) % 0xFF; // the teeks are 0x11 < num < 0xFF
-        if (!(isTeek > 0x10 && isTeek < 0x20)) isTeek = false;
-        for (var nDigit = num.length; nDigit > 0; nDigit--) {
-            var digit = parseInt(num.charAt(nDigit - 1), 0x10);
-            var newWord;
+        var numLen = numText.length;
+        for (var place = 0; place < numLen; place++) {
+            var digit, hasTeek, newWord;
+            /* predetermine the digits for every block of 4, and whether there's a teek */
+            if ( place%4 === 0 ) {
+                digit = [];
+                for (var i = 0; i < 4; i++) {
+                    digit[i] = parseInt( numText.charAt(numLen-(place+i+1)), 0x10 ) || 0;
+                }
+                // the teeks are 0x11 < num < 0xFF
+                hasTeek = (digit[1] === 1 && digit[2] > 1);
+            }
 
-            if ( digit === 0 || (isTeek && nDigit === num.length) )
+            if ( digit[place%4] === 0 && (place === 0 || place%4 != 0) )
                 continue; // zeroes do not contribute to the pronunciation
-            switch (nDigit) {
-                case ( num.length ): // ones digit
-                    newWord = dict[countMode];
-                    newWord = newWord[digit-1];
+            switch ( place%4 ) {
+                case ( 0 ): // ones digit within block of 4
+                    newWord = hasTeek ? dict.teeks : dict[countMode];
+                    newWord = newWord[digit[0]-1] || "";
+                    if (dict[place]) { // add space and block word, for blocks >= milleks
+                        newWord += " " + dict[place];
+                        if (parseInt(numText.substr(-place), 0x10) > 0xFF) { // add comma if more words >= 0x100
+                            newWord += ",";
+                        }
+                    }
                     break;
-                case ( num.length - 1 ): // texes digit
-                    newWord = isTeek ? dict.teeks : dict.texes;
-                    if (isTeek) digit = isTeek % 0x10;
-                    newWord = newWord[digit-1];
+                case ( 1 ): // texes digit within block of 4
+                    if ( hasTeek ) // teeks are processed as the ones digit
+                        continue;
+                    newWord = dict["texes"][digit[1]-1];
                     break;
-                case ( num.length - 2 ): // hundreks digit
-                case ( num.length - 3 ): // thouseks digit
-                case ( num.length - 4 ): // milleks digit
-                    newWord = dict["card"][digit-1] + " " + dict[num.length - nDigit];
-                    if ( parseInt(num.slice(-num.length + nDigit), 0x10) > 0xFF ) newWord += ", ";
+                case ( 2 ): // hundreks digit within block of 4
+                    newWord = dict["card"][digit[2]-1] + " " + dict[place%4];
+                    break;
+                case ( 3 ): // thouseks digit within block of 4
+                    newWord = dict["card"][digit[3]-1] + " " + dict[place%4];
+                    if ( digit[2] > 0 ) // add comma if hundreks > 0
+                        newWord += ",";
                     break;
                 default:
                     newWord = "undefined"
             }
 
-            if ( countMode === "ord" && nDigit < num.length ) {
-                newWord += "th"; // suffix is always the same for non-ones digit
+            if ( countMode === "ord" ) {
+                if ( place > 0 ) {
+                    newWord += "th"; // ordination suffix is unique only for ones digit, "-th" otherwise
+                }
+                countMode = "card"; // ordination suffix can be used no more than once
             }
-            countMode = undefined; // ordination suffix can be used no more than once
-            //console.log(nDigit, digit);
             pronounce = newWord + " " + pronounce;
         }
     }
@@ -149,7 +164,7 @@ function updateText() {
 function initSpeech() {
     var speech = new SpeechSynthesisUtterance();
     speech.onstart = function() {
-        console.log("started speaking", speech.text)
+        console.log("started speaking:\n", speech.text)
     };
     speech.onend = function() {
         console.log("done speaking.")
