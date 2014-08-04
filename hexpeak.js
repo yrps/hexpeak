@@ -1,5 +1,12 @@
-var countSet = ":radio[name=counting]";
+/* DOM element selectors */
+var elem = {
+    countSet: ":radio[name=counting]",
+    numField: "[data-radix]",
+    hexField: "[data-radix='16']:first",
+    trans: "#translation"
+};
 
+/* numbers are mapped to these words */
 var dict = {
     zero: {card: "zero", ord: "zeroth"}
     ,
@@ -27,11 +34,13 @@ var dict = {
     ,
     0x10: "quadrillek"
     ,
-    max: Math.pow(2, 4 * 0x14) // using Math.pow because << maxes out at 32-bit
+    maxHexDigits: 5
 };
 
-var rand = {min: 0x10, max: 0xFFFF};
+/* random numbers are within this range */
+var rand = { min: 0x10, max: 0xFFFF };
 
+/*
 var colors = {
     0x0: "Black",
     0x4: "DarkRed",
@@ -39,6 +48,7 @@ var colors = {
     0xC: "DarkBlue",
     0x10: "DarkGoldenRod"
 };
+*/
 
 /** initialize the fields to a zero */
 function zeroFields() {
@@ -62,12 +72,14 @@ function parseTF( TFobj ) {
 
 /** synchronize all fields according to their respective bases */
 function updateTFs( num/*, TFobj*/ ) {
-    if (num >= dict.max) {
-        console.warn("overflow: 0x%s >= 0x%s",
-            num.toString(0x10).toUpperCase(), (dict.max).toString(0x10).toUpperCase());
-        num = num & dict.max;
+    var hexString = num.toString(0x10);
+    var numHexDigits = hexString.length;
+    if ( numHexDigits > dict.maxHexDigits ) {
+        console.warn("digits in 0x%s exceeds maximum (%d > %d)",
+            hexString.toUpperCase(), numHexDigits, dict.maxHexDigits);
+        num = parseInt(hexString.substr(-dict.maxHexDigits), 0x10);
     }
-    $( "[data-radix]" ).each(function() {
+    elem.numField.each(function() {
 //        if ($(this).get(0)==(TFobj && TFobj.get(0)) )
 //            return; // no need to update self
         var text = num.toString($(this).attr( "data-radix" )).toUpperCase();
@@ -82,14 +94,14 @@ function updateTFs( num/*, TFobj*/ ) {
 
 /** respond to changing counting type */
 function registerChangeCount() {
-    countSet.change(function() {
+    elem.countSet.change(function() {
         updateText($(this));
     })
 }
 /** translate the number and update the text-out element */
 function updateText() {
-    var num = $( "[data-radix='16']:first" ).text();
-    var countMode = countSet.filter(":checked").get(0).id; // cardinal or ordinal
+    var num = elem.hexField.text();
+    var countMode = elem.countSet.filter( ":checked" ).get(0).id; // cardinal or ordinal
     var pronounce = "";
     if ( parseInt(num, 0x10) === 0 ) {
         pronounce = dict.zero[countMode]; // zero is a special case
@@ -116,13 +128,13 @@ function updateText() {
                 case ( num.length - 3 ): // thouseks digit
                 case ( num.length - 4 ): // milleks digit
                     newWord = dict["card"][digit-1] + " " + dict[num.length - nDigit];
-                    if (parseInt(num.slice(-num.length + nDigit), 0x10) > 0xFF) newWord += ", ";
+                    if ( parseInt(num.slice(-num.length + nDigit), 0x10) > 0xFF ) newWord += ", ";
                     break;
                 default:
                     newWord = "undefined"
             }
 
-            if (countMode === "ord" && nDigit < num.length) {
+            if ( countMode === "ord" && nDigit < num.length ) {
                 newWord += "th"; // suffix is always the same for non-ones digit
             }
             countMode = undefined; // ordination suffix can be used no more than once
@@ -130,7 +142,7 @@ function updateText() {
             pronounce = newWord + " " + pronounce;
         }
     }
-    $( "#translation" ).text( pronounce.trim() );
+    elem.trans.text( pronounce.trim() );
 }
 
 /** initialize and return the speech object */
@@ -163,7 +175,10 @@ $(document).ready(function() {
         parseTF($(this));
     });
 
-    countSet = $( countSet );
+    /* make jQuery objects out of the selectors given */
+    $.each(elem, function( key, selector ) {
+        elem[key] = $( selector );
+    });
 
     //console.log("hash: %s", location.hash);
     if (!location.hash)
@@ -171,5 +186,4 @@ $(document).ready(function() {
     else
         updateTFs(parseInt(location.hash.substr(1), 0x10));
     registerChangeCount();
-    //console.log("Maximum parseable is 0x%s - 1", dict.max.toString(0x10));
 });
