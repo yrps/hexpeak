@@ -3,7 +3,8 @@ var elem = {
     countSet: ":radio[name=counting]",
     numField: "[data-radix]",
     hexField: "[data-radix='16']:first",
-    trans: "#translation"
+    trans: "#translation",
+    playBtn: "#playback"
 };
 
 /* numbers are mapped to these words */
@@ -40,7 +41,7 @@ var dict = {
 };
 
 /* range of random numbers */
-var rand = { min: 0x10, max: 0xFFFF };
+var rand = { min: 0x10, max: 0xFFFFF };
 
 /** initialize the fields to a zero */
 function zeroFields() {
@@ -170,10 +171,26 @@ function updateTranslation() {
 function initSpeech() {
     var speech = new SpeechSynthesisUtterance();
     speech.onstart = function() {
-        console.log("started speaking:\n", speech.text)
+        //console.log("started speaking:\n", speech.text);
     };
     speech.onend = function() {
-        console.log("done speaking.")
+        //console.log("done speaking.");
+        elem.playBtn.button("option", {icons: {
+            primary: "ui-icon-play"
+        }});
+    };
+    speech.start = function() {
+        speech.text = elem.trans.text();
+        speechSynthesis.speak(speech);
+        elem.playBtn.button("option", {icons: {
+            primary: "ui-icon-stop"
+        }});
+    };
+    speech.stop = function() {
+        speechSynthesis.cancel();
+        elem.playBtn.button("option", {icons: {
+            primary: "ui-icon-play"
+        }});
     };
     return speech;
 }

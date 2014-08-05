@@ -73,6 +73,9 @@
             $(this).attr( "title", $(this).attr( "href" ) );
         });
 
+        /* deactivate spellcheck for input fields */
+        fields.attr( "spellcheck", "false");
+
         /* widgetize the appropriate elements */
         $( "#count-type" ).buttonset();
 
@@ -110,7 +113,6 @@
 
         /* dynamically assign UI class */
         fields.each(function() {
-            $(this).attr( "spellcheck", "false");
             $(this).focus(function() {
                 $(this).addClass( "ui-state-highlight" );
             });
@@ -119,20 +121,24 @@
             });
         });
 
+        /* detect if speech API is supported */
         if (typeof SpeechSynthesisUtterance === "undefined") {
             playBtn.button( "disable" );
             $( "<div></div>" ).addClass( "ui-widget" )
                     .css({"text-align": "center", "font-size": "smaller", "text-indent": ".5em"}).append(
-                $( "<section></section>" ).text("The speech synthesis API doesn't work in this browser. Try Chrome?")
+                $( "<section></section>" ).text( "The speech synthesis API doesn't work in this browser. Try Chrome?" )
                     .addClass( "ui-state-error ui-corner-all" ).prepend(
-                        $( "<span></span>" ).addClass("ui-icon ui-icon-alert").css("float", "left")
+                        $( "<span></span>" ).addClass( "ui-icon ui-icon-alert" ).css( "float", "left" )
                 )
             ).insertAfter( ".t" );
         } else {
             var speech = initSpeech();
             playBtn.click(function () {
-                speech.text = trans.text();
-                speechSynthesis.speak(speech);
+                if ( speechSynthesis.speaking ) {
+                    speech.stop();
+                } else {
+                    speech.start();
+                }
             });
         }
     });
