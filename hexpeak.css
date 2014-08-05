@@ -18,6 +18,22 @@ h4 {
     margin-bottom: .5em;
 }
 
+.ones {
+    color: darkred !important;
+}
+
+.texes {
+    color: darkgreen !important;
+}
+
+.hundreks {
+    color: darkblue !important;
+}
+
+.thouseks {
+    color: darkorange !important;
+}
+
 [contenteditable] {
     font: larger monospace !important;
     border-width: 3px !important;
