@@ -161,7 +161,7 @@ function updateTranslation() {
         newDigits = (hasTeek && place%4 === 0 ? "1" : "") + numText.charAt( numLen-(place+1) ) + zeroString;
         zeroString = "";
         // prepend a <span>, with place-determined class, containing the new word and a space
-        elem.trans.prepend( $("<span></span>").addClass(dict.css[place%4]).text(newWord + " ") );
+        elem.trans.prepend( $("<span></span>").addClass(dict.css[place%4]).text(newWord + " ").fadeIn( ) );
         elem.hexField.prepend( $("<span></span>").addClass(dict.css[place%4]).text(newDigits) );
     }
 }

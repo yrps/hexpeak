@@ -57,7 +57,8 @@
 
 <script>
     $(function () {
-        var playBtn = $( "#playback" ), randBtn = $( "#random"), fields = $("[contenteditable]" ), cols = $( ".tr>*");
+        var trans = $( "#translation" ), playBtn = $( "#playback" ), randBtn = $( "#random" ),
+                fields = $("[contenteditable]" ), cols = $( ".tr>*" );
 
         /* create a header, populate it from the meta description, and prepend to body */
         $( "<h3></h3>" ).text( $( "meta[name='description']" ).attr( "content" )).prependTo( "body" );
@@ -103,9 +104,9 @@
 
         /* statically assign UI class */
         $( "body" ).addClass( "ui-state-default" );
-        $( "#translation" ).add( fields ).addClass( "ui-state-active" );
         $( "h3, h4, footer" ).add( cols, fields ).addClass( "ui-widget" );
         $( cols, fields ).addClass( "ui-corner-all" );
+        trans.add( fields ).addClass( "ui-state-active" );
 
         /* dynamically assign UI class */
         fields.each(function() {
@@ -120,8 +121,8 @@
 
         if (typeof SpeechSynthesisUtterance === "undefined") {
             playBtn.button( "disable" );
-            $( "<div></div>" ).addClass( "ui-widget" ).
-                css({"text-align": "center", "font-size": "smaller", "text-indent": ".5em"}).append(
+            $( "<div></div>" ).addClass( "ui-widget" )
+                    .css({"text-align": "center", "font-size": "smaller", "text-indent": ".5em"}).append(
                 $( "<section></section>" ).text("The speech synthesis API doesn't work in this browser. Try Chrome?")
                     .addClass( "ui-state-error ui-corner-all" ).prepend(
                         $( "<span></span>" ).addClass("ui-icon ui-icon-alert").css("float", "left")
@@ -130,7 +131,7 @@
         } else {
             var speech = initSpeech();
             playBtn.click(function () {
-                speech.text = $( "#translation" ).text();
+                speech.text = trans.text();
                 speechSynthesis.speak(speech);
             });
         }
